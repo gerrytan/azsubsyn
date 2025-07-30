@@ -7,3 +7,7 @@ func From[T any](input *T) T {
 	}
 	return v
 }
+
+func To[T any](input T) *T {
+	return &input
+}

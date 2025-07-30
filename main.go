@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gerrytan/azdiffit/internal/apply"
 	"github.com/gerrytan/azdiffit/internal/credential"
 	"github.com/gerrytan/azdiffit/internal/plan"
 )
@@ -24,6 +25,11 @@ func main() {
 		}
 	case "plan":
 		if err := plan.RunPlan(); err != nil {
+			fmt.Printf("Error: %v\n", err)
+			os.Exit(1)
+		}
+	case "apply":
+		if err := apply.RunApply(); err != nil {
 			fmt.Printf("Error: %v\n", err)
 			os.Exit(1)
 		}

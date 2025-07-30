@@ -93,4 +93,4 @@ The plan file can be modified manually if necessary.
 
 ### Apply
 
-`azdiffit apply -f azdiffit-plan.jsonc` will execute the modification plan as per the supplied plan file.
+`azdiffit apply azdiffit-plan.jsonc` will execute the modification plan as per the supplied file.
