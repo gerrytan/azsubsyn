@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gerrytan/azdiffit/internal/credcheck"
+	"github.com/gerrytan/azdiffit/internal/credential"
+	"github.com/gerrytan/azdiffit/internal/plan"
 )
 
 func main() {
@@ -17,7 +18,12 @@ func main() {
 
 	switch command {
 	case "credcheck":
-		if err := credcheck.RunCredCheck(); err != nil {
+		if err := credential.RunCredCheck(); err != nil {
+			fmt.Printf("Error: %v\n", err)
+			os.Exit(1)
+		}
+	case "plan":
+		if err := plan.RunPlan(); err != nil {
 			fmt.Printf("Error: %v\n", err)
 			os.Exit(1)
 		}

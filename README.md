@@ -77,20 +77,13 @@ directory.
 The plan file has following format:
 
 ```jsonc
-[
-  {
-    "type": "rp_reg",
-    "prop": "val"
-  },
-  {
-    "type": "preview_feature",
-    "prop": "val"
-  },
-  {
-    "type": "quota",
-    "prop": "val"
-  }
-]
+{
+  "rpRegistrations": [
+    { "namespace": "Microsoft.Foo", "reason": "NotRegisteredInTarget" },
+    { "namespace": "Microsoft.Bar", "reason": "NotFoundInTarget" }
+  ]
+}
+
 ```
 
 The modification is always additive, if target subscription already has an RP registered / more than required quota, it

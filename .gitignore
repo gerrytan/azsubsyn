@@ -1,2 +1,4 @@
+tmp/
 azdiffit
+azdiffit-plan.jsonc
 .env.sh
