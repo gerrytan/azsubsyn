@@ -79,12 +79,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Go
+    - name: Set up go
       uses: actions/setup-go@v5
       with:
         go-version: ${{ inputs.go_version }}
 
-    - name: Cache Go modules
+    - name: Cache go modules
       uses: actions/cache@v4
       with:
         path: |
@@ -151,7 +151,7 @@ jobs:
         retention-days: 30
 
   create-release:
-    name: Create Release
+    name: Create release
     needs: build
     runs-on: ubuntu-latest
     if: ${{ inputs.create_release }}
@@ -172,14 +172,7 @@ jobs:
         find ./artifacts -name "azsubsyn-*" -type f -exec cp {} release/ \;
         ls -la release/
 
-    - name: Generate release tag
-      id: tag
-      run: |
-        TAG="release-v${{ inputs.azsubsyn_version }}"
-        echo "tag=$TAG" >> $GITHUB_OUTPUT
-        echo "Generated tag: $TAG"
-
-    - name: Create Release
+    - name: Create draft release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ inputs.azsubsyn_version }}
