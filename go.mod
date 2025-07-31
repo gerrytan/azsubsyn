@@ -1,4 +1,4 @@
-module github.com/gerrytan/azdiffit
+module github.com/gerrytan/azsubsyn
 
 go 1.24.5
 

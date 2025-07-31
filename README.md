@@ -1,4 +1,4 @@
-# azdiffit
+# azsubsyn
 
 A CLI tool to ensure a target Azure subscription has all RPs (resource providers) and preview features registered
 compared to source (which can be on a different tenant).
@@ -9,8 +9,8 @@ Useful when setting up a new tenant / subscription based on an existing one.
 
 You need to have [go](https://go.dev/doc/install) and [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed.
 
-Install via go toolchain: `go install github.com/gerrytan/azdiffit@latest`. The binary will be available in
-`$GOPATH/bin/azdiffit`.
+Install via go toolchain: `go install github.com/gerrytan/azsubsyn@latest`. The binary will be available in
+`$GOPATH/bin/azsubsyn`.
 
 ## Usage
 
@@ -22,14 +22,14 @@ subscription to setup the principals.
 The following environment variables need to be set:
 
 ```bash
-export AZDIFFIT_SRC_CLIENT_ID="" # See instruction below
-export AZDIFFIT_SRC_CLIENT_SECRET="" # See instruction below
-export AZDIFFIT_SRC_TENANT_ID="12345678-1234-1234-1234-123456789abc"
-export AZDIFFIT_SRC_SUBSCRIPTION_ID="12345678-1234-1234-1234-123456789abc"
-export AZDIFFIT_TARGET_CLIENT_ID="" # See instruction below
-export AZDIFFIT_TARGET_CLIENT_SECRET="" # See instruction below
-export AZDIFFIT_TARGET_TENANT_ID="12345678-1234-1234-1234-123456789abc"
-export AZDIFFIT_TARGET_SUBSCRIPTION_ID="12345678-1234-1234-1234-123456789abc"
+export AZSUBSYN_SRC_CLIENT_ID="" # See instruction below
+export AZSUBSYN_SRC_CLIENT_SECRET="" # See instruction below
+export AZSUBSYN_SRC_TENANT_ID="12345678-1234-1234-1234-123456789abc"
+export AZSUBSYN_SRC_SUBSCRIPTION_ID="12345678-1234-1234-1234-123456789abc"
+export AZSUBSYN_TARGET_CLIENT_ID="" # See instruction below
+export AZSUBSYN_TARGET_CLIENT_SECRET="" # See instruction below
+export AZSUBSYN_TARGET_TENANT_ID="12345678-1234-1234-1234-123456789abc"
+export AZSUBSYN_TARGET_SUBSCRIPTION_ID="12345678-1234-1234-1234-123456789abc"
 ```
 
 The steps to create the service principal for source and target subscriptions are almost identical:
@@ -48,7 +48,7 @@ The steps to create the service principal for source and target subscriptions ar
 
     ```bash
     az ad sp create-for-rbac \
-      --name myname-azdiffit-20250701 \
+      --name myname-azsubsyn-20250701 \
       --role Contributor \
       --scopes /subscriptions/12345678-1234-1234-1234-123456789abc \
       --years 1
@@ -59,7 +59,7 @@ The steps to create the service principal for source and target subscriptions ar
     ```json
     {
       "appId": "12345678-1234-1234-1234-123456789abc",
-      "displayName": "myuser-azdiffit-20250701",
+      "displayName": "myuser-azsubsyn-20250701",
       "password": "abcdefghijkl",
       "tenant": "12345678-1234-1234-1234-123456789abc"
     }
@@ -67,12 +67,12 @@ The steps to create the service principal for source and target subscriptions ar
 
     Use the `"appId"` value as `_CLIENT_ID` env var and `"password"` as `_CLIENT_SECRET`
 
-1. Once you've exported the environment variables, check using `azdiffit credcheck`
+1. Once you've exported the environment variables, check using `azsubsyn credcheck`
 
 ### Plan
 
-`azdiffit plan` will fetch RP and preview features registrations for both source and target subscriptions and creates a
-modification plan to be applied to the target subscription. The plan is saved to the `azdiffit-plan.jsonc` file in the
+`azsubsyn plan` will fetch RP and preview features registrations for both source and target subscriptions and creates a
+modification plan to be applied to the target subscription. The plan is saved to the `azsubsyn-plan.jsonc` file in the
 working directory.
 
 The plan file has following format:
@@ -106,4 +106,4 @@ The plan file can be modified manually if necessary.
 
 ### Apply
 
-`azdiffit apply azdiffit-plan.jsonc` will execute the modification plan as per the supplied file.
+`azsubsyn apply azsubsyn-plan.jsonc` will execute the modification plan as per the supplied file.

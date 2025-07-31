@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armsubscriptions"
-	"github.com/gerrytan/azdiffit/internal/config"
+	"github.com/gerrytan/azsubsyn/internal/config"
 )
 
 func RunCredCheck() error {
@@ -35,7 +35,7 @@ func RunCredCheck() error {
 	}
 
 	fmt.Println("✅ All credentials are valid and subscriptions are accessible!")
-	fmt.Println("🎉 You're ready to run 'azdiffit plan' command")
+	fmt.Println("🎉 You're ready to run 'azsubsyn plan' command")
 
 	return nil
 }
@@ -73,10 +73,10 @@ func testSubscriptionAccess(ctx context.Context, config *config.Config, kind str
 }
 
 func printUsage() {
-	fmt.Println("azdiffit credcheck - Check credentials and connectivity to both source and target subscriptions")
+	fmt.Println("azsubsyn credcheck - Check credentials and connectivity to both source and target subscriptions")
 	fmt.Println()
 	fmt.Println("USAGE:")
-	fmt.Println("  azdiffit credcheck")
+	fmt.Println("  azsubsyn credcheck")
 	fmt.Println()
 	fmt.Println("DESCRIPTION:")
 	fmt.Println("  This command checks if the environment variables are set up correctly,")

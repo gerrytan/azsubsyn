@@ -4,7 +4,7 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
-	"github.com/gerrytan/azdiffit/internal/config"
+	"github.com/gerrytan/azsubsyn/internal/config"
 )
 
 func BuildCredential(config *config.Config) (cred *azidentity.ClientSecretCredential, err error) {

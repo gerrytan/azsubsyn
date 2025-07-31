@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gerrytan/azdiffit/internal/apply"
-	"github.com/gerrytan/azdiffit/internal/credential"
-	"github.com/gerrytan/azdiffit/internal/plan"
+	"github.com/gerrytan/azsubsyn/internal/apply"
+	"github.com/gerrytan/azsubsyn/internal/credential"
+	"github.com/gerrytan/azsubsyn/internal/plan"
 )
 
 func main() {
@@ -43,11 +43,11 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Println("azdiffit - A CLI tool to ensure target Azure subscription has all RPs (resource providers) and ")
+	fmt.Println("azsubsyn - A CLI tool to ensure target Azure subscription has all RPs (resource providers) and ")
 	fmt.Println("           preview features registered compared to source (which can be on a different tenant).")
 	fmt.Println()
 	fmt.Println("USAGE:")
-	fmt.Println("  azdiffit <command>")
+	fmt.Println("  azsubsyn <command>")
 	fmt.Println()
 	fmt.Println("COMMANDS:")
 	fmt.Println("  credcheck    Check credentials and connectivity to both source and target subscriptions")
@@ -56,5 +56,5 @@ func printUsage() {
 	fmt.Println("  help         Show this help message")
 	fmt.Println()
 	fmt.Println("DESCRIPTION:")
-	fmt.Println("  See https://github.com/gerrytan/azdiffit for credential setup and usage example.")
+	fmt.Println("  See https://github.com/gerrytan/azsubsyn for credential setup and usage example.")
 }

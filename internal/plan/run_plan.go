@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gerrytan/azdiffit/internal/config"
+	"github.com/gerrytan/azsubsyn/internal/config"
 )
 
 func RunPlan() error {
@@ -46,24 +46,24 @@ func RunPlan() error {
 		return fmt.Errorf("❌ Failed to serialize plan to JSON: %w", err)
 	}
 
-	err = os.WriteFile("azdiffit-plan.jsonc", jsonData, 0644)
+	err = os.WriteFile("azsubsyn-plan.jsonc", jsonData, 0644)
 	if err != nil {
 		return fmt.Errorf("❌ Failed to write plan to file: %w", err)
 	}
 
-	fmt.Printf("✅ Plan written successfully to azdiffit-plan.jsonc (%d RPs, %d preview features)\n", len(plan.RpRegistrations), len(plan.PreviewFeatures))
+	fmt.Printf("✅ Plan written successfully to azsubsyn-plan.jsonc (%d RPs, %d preview features)\n", len(plan.RpRegistrations), len(plan.PreviewFeatures))
 	return nil
 }
 
 func printUsage() {
-	fmt.Println("azdiffit plan - Scan unregistered RPs and preview feature in the target subscription and save the plan to a file")
+	fmt.Println("azsubsyn plan - Scan unregistered RPs and preview feature in the target subscription and save the plan to a file")
 	fmt.Println()
 	fmt.Println("USAGE:")
-	fmt.Println("  azdiffit plan")
+	fmt.Println("  azsubsyn plan")
 	fmt.Println()
 	fmt.Println("DESCRIPTION:")
 	fmt.Println("  Fetch RP and preview features registrations for both source and target subscriptions and creates a")
-	fmt.Println("  modification plan to be applied to the target subscription. The plan is saved to `azdiffit-plan.jsonc` file in the working")
+	fmt.Println("  modification plan to be applied to the target subscription. The plan is saved to `azsubsyn-plan.jsonc` file in the working")
 	fmt.Println("  directory.")
 	fmt.Println()
 	fmt.Println("  The modification is always additive, if target subscription already has an RP / feature registered, it won't be turned off.")

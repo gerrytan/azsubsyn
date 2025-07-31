@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armfeatures"
-	"github.com/gerrytan/azdiffit/internal/config"
-	"github.com/gerrytan/azdiffit/internal/credential"
-	"github.com/gerrytan/azdiffit/internal/plan"
+	"github.com/gerrytan/azsubsyn/internal/config"
+	"github.com/gerrytan/azsubsyn/internal/credential"
+	"github.com/gerrytan/azsubsyn/internal/plan"
 )
 
 func registerPreviewFeatures(config *config.Config, previewFeatures []plan.PreviewFeature) error {

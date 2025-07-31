@@ -7,17 +7,17 @@ import (
 
 func BuildConfigs() (srcConfig *Config, targetConfig *Config, err error) {
 	srcConfig = &Config{
-		ClientID:       os.Getenv("AZDIFFIT_SRC_CLIENT_ID"),
-		ClientSecret:   os.Getenv("AZDIFFIT_SRC_CLIENT_SECRET"),
-		TenantID:       os.Getenv("AZDIFFIT_SRC_TENANT_ID"),
-		SubscriptionID: os.Getenv("AZDIFFIT_SRC_SUBSCRIPTION_ID"),
+		ClientID:       os.Getenv("AZSUBSYN_SRC_CLIENT_ID"),
+		ClientSecret:   os.Getenv("AZSUBSYN_SRC_CLIENT_SECRET"),
+		TenantID:       os.Getenv("AZSUBSYN_SRC_TENANT_ID"),
+		SubscriptionID: os.Getenv("AZSUBSYN_SRC_SUBSCRIPTION_ID"),
 	}
 
 	targetConfig = &Config{
-		ClientID:       os.Getenv("AZDIFFIT_TARGET_CLIENT_ID"),
-		ClientSecret:   os.Getenv("AZDIFFIT_TARGET_CLIENT_SECRET"),
-		TenantID:       os.Getenv("AZDIFFIT_TARGET_TENANT_ID"),
-		SubscriptionID: os.Getenv("AZDIFFIT_TARGET_SUBSCRIPTION_ID"),
+		ClientID:       os.Getenv("AZSUBSYN_TARGET_CLIENT_ID"),
+		ClientSecret:   os.Getenv("AZSUBSYN_TARGET_CLIENT_SECRET"),
+		TenantID:       os.Getenv("AZSUBSYN_TARGET_TENANT_ID"),
+		SubscriptionID: os.Getenv("AZSUBSYN_TARGET_SUBSCRIPTION_ID"),
 	}
 
 	missingEnvVars := []string{}
@@ -37,16 +37,16 @@ func checkEnvVar(config *Config, name string) []string {
 	missing := []string{}
 
 	if config.ClientID == "" {
-		missing = append(missing, "AZDIFFIT_"+name+"_CLIENT_ID")
+		missing = append(missing, "AZSUBSYN_"+name+"_CLIENT_ID")
 	}
 	if config.ClientSecret == "" {
-		missing = append(missing, "AZDIFFIT_"+name+"_CLIENT_SECRET")
+		missing = append(missing, "AZSUBSYN_"+name+"_CLIENT_SECRET")
 	}
 	if config.TenantID == "" {
-		missing = append(missing, "AZDIFFIT_"+name+"_TENANT_ID")
+		missing = append(missing, "AZSUBSYN_"+name+"_TENANT_ID")
 	}
 	if config.SubscriptionID == "" {
-		missing = append(missing, "AZDIFFIT_"+name+"_SUBSCRIPTION_ID")
+		missing = append(missing, "AZSUBSYN_"+name+"_SUBSCRIPTION_ID")
 	}
 
 	return missing

@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
-	"github.com/gerrytan/azdiffit/internal/config"
-	"github.com/gerrytan/azdiffit/internal/credential"
-	"github.com/gerrytan/azdiffit/internal/pointer"
+	"github.com/gerrytan/azsubsyn/internal/config"
+	"github.com/gerrytan/azsubsyn/internal/credential"
+	"github.com/gerrytan/azsubsyn/internal/pointer"
 )
 
 func planRPRegistrations(srcConfig *config.Config, targetConfig *config.Config) (rpRegs []RpRegistration, err error) {

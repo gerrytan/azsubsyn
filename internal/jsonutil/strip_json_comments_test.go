@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/gerrytan/azdiffit/internal/jsonutil"
+	"github.com/gerrytan/azsubsyn/internal/jsonutil"
 )
 
 func TestStripJSONComments(t *testing.T) {
@@ -211,7 +211,7 @@ func TestStripJSONComments_ValidJSONOutput(t *testing.T) {
 	// Test that common JSONC patterns produce valid JSON
 	jsonc := `{
   // This is a configuration file
-  "name": "azdiffit-plan",
+  "name": "azsubsyn-plan",
   "version": "1.0.0", // Version comment
   
   /* Resource provider registrations
@@ -238,8 +238,8 @@ func TestStripJSONComments_ValidJSONOutput(t *testing.T) {
 	}
 
 	// Verify structure
-	if parsed["name"] != "azdiffit-plan" {
-		t.Errorf("Expected name to be 'azdiffit-plan', got %v", parsed["name"])
+	if parsed["name"] != "azsubsyn-plan" {
+		t.Errorf("Expected name to be 'azsubsyn-plan', got %v", parsed["name"])
 	}
 
 	if parsed["version"] != "1.0.0" {
