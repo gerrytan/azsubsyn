@@ -15,7 +15,7 @@ func planPreviewFeatures(srcConfig *config.Config, targetConfig *config.Config) 
 	ctx := context.Background()
 
 	fmt.Println("🔍 Fetching preview features from source subscription...")
-	sourceFeatures, err := getPreviewFeatures(ctx, srcConfig)
+	srcFeatures, err := getPreviewFeatures(ctx, srcConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get preview features from source subscription: %w", err)
 	}
@@ -32,9 +32,11 @@ func planPreviewFeatures(srcConfig *config.Config, targetConfig *config.Config) 
 		targetFeaturesByName[pointer.From(feat.Name)] = feat
 	}
 
-	for _, srcFeature := range sourceFeatures {
-		if strings.EqualFold(getState(srcFeature), "Registered") {
+	for _, srcFeature := range srcFeatures {
+		srcState := getState(srcFeature)
+		if strings.EqualFold(srcState, "Registered") || strings.EqualFold(srcState, "Pending") {
 			targetFeature, exists := targetFeaturesByName[pointer.From(srcFeature.Name)]
+			targetState := getState(targetFeature)
 			if !exists {
 				srcKey, srcNamespace := parseKeyAndNamespace(srcFeature.Name)
 				prFeats = append(prFeats, PreviewFeature{
@@ -42,7 +44,7 @@ func planPreviewFeatures(srcConfig *config.Config, targetConfig *config.Config) 
 					Namespace: srcNamespace,
 					Reason:    "NotFoundInTarget",
 				})
-			} else if !strings.EqualFold(getState(targetFeature), "Registered") {
+			} else if !strings.EqualFold(targetState, "Registered") && !strings.EqualFold(targetState, "Pending") {
 				targetKey, targetNamespace := parseKeyAndNamespace(targetFeature.Name)
 				prFeats = append(prFeats, PreviewFeature{
 					Key:       targetKey,
@@ -84,7 +86,7 @@ func getPreviewFeatures(ctx context.Context, config *config.Config) (features []
 }
 
 func getState(f *armfeatures.FeatureResult) string {
-	if f.Properties == nil {
+	if f == nil || f.Properties == nil {
 		return ""
 	}
 	return pointer.From(f.Properties.State)
