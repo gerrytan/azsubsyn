@@ -62,6 +62,7 @@ func printUsage() {
 	fmt.Println("  credcheck    Check credentials and connectivity to both source and target subscriptions")
 	fmt.Println("  plan         Scan unregistered RPs and preview feature in the target subscription and save the plan to a file")
 	fmt.Println("  apply        Apply the plan file to the target subscription")
+	fmt.Println("  version      Show version information")
 	fmt.Println("  help         Show this help message")
 	fmt.Println()
 	fmt.Println("DESCRIPTION:")
