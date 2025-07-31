@@ -3,14 +3,19 @@ package credential
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armsubscriptions"
 	"github.com/gerrytan/azdiffit/internal/config"
 )
 
 func RunCredCheck() error {
+	if len(os.Args) > 2 {
+		printUsage()
+		os.Exit(1)
+	}
+
 	fmt.Println("🔍 Checking environment variables...")
-	fmt.Println()
 
 	srcConfig, targetConfig, err := config.BuildConfigs()
 	if err != nil {
@@ -29,7 +34,6 @@ func RunCredCheck() error {
 		return fmt.Errorf("❌ Target subscription access failed: %w", err)
 	}
 
-	fmt.Println()
 	fmt.Println("✅ All credentials are valid and subscriptions are accessible!")
 	fmt.Println("🎉 You're ready to run 'azdiffit plan' command")
 
@@ -66,4 +70,15 @@ func testSubscriptionAccess(ctx context.Context, config *config.Config, kind str
 	}
 
 	return nil
+}
+
+func printUsage() {
+	fmt.Println("azdiffit credcheck - Check credentials and connectivity to both source and target subscriptions")
+	fmt.Println()
+	fmt.Println("USAGE:")
+	fmt.Println("  azdiffit credcheck")
+	fmt.Println()
+	fmt.Println("DESCRIPTION:")
+	fmt.Println("  This command checks if the environment variables are set up correctly,")
+	fmt.Println("  tests authentication and connectivity to both source and target Azure subscriptions.")
 }

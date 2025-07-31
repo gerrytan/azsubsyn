@@ -1,14 +1,14 @@
 # azdiffit
 
-A CLI tool to setup a target Azure subscription based on a source subscription (which can be on a separate tenant). The
-setup includes ensuring the target subscription has all Resource Providers (RPs) registered, all preview features
-registered, and enough quotas.
+A CLI tool to ensure a target Azure subscription has all RPs (resource providers) and preview features registered
+compared to source (which can be on a different tenant).
 
-## Installation
+## Prerequisites and installation
 
-Install using go toolchain: `go install github.com/gerrytan/azdiffit@latest` or alternatively download precompiled
-binaries for your OS from the Release section and place it in /usr/local/bin or other places registered in your PATH
-variable.
+You need to have [go](https://go.dev/doc/install) and [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed.
+
+Install via go toolchain: `go install github.com/gerrytan/azdiffit@latest`. The binary will be available in
+`$GOPATH/bin/azdiffit`.
 
 ## Usage
 
@@ -30,10 +30,9 @@ export AZDIFFIT_TARGET_TENANT_ID="12345678-1234-1234-1234-123456789abc"
 export AZDIFFIT_TARGET_SUBSCRIPTION_ID="12345678-1234-1234-1234-123456789abc"
 ```
 
-The steps to create the service principal for source and target subscriptions are almost identical. You need to have [Azure
-CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed:
+The steps to create the service principal for source and target subscriptions are almost identical:
 
-1. Ensure you're logged in to the correct tenant and subscription: logout, login, set subscription and check session as
+1. Ensure you're logged in to the correct tenant and subscription. Logout, login, set subscription and check session as
    required:
 
     ```bash
@@ -70,24 +69,36 @@ CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed:
 
 ### Plan
 
-`azdiffit plan` will fetch RP registrations, Preview features and Quotas for both source and target subscriptions,
-create a modification plan to be applied to the target subscription, and save it to `azdiffit-plan.jsonc` in the working
-directory.
+`azdiffit plan` will fetch RP and preview features registrations for both source and target subscriptions and creates a
+modification plan to be applied to the target subscription. The plan is saved to the `azdiffit-plan.jsonc` file in the
+working directory.
 
 The plan file has following format:
 
 ```jsonc
 {
   "rpRegistrations": [
-    { "namespace": "Microsoft.Foo", "reason": "NotRegisteredInTarget" },
-    { "namespace": "Microsoft.Bar", "reason": "NotFoundInTarget" }
+    { "namespace": "Microsoft.CertificateRegistration", "reason": "NotRegisteredInTarget" },
+    { "namespace": "Microsoft.VideoIndexer", "reason": "NotFoundInTarget" }
+  ],
+  "previewFeatures": [
+    {
+      "key": "AllowMultiplePeeringLinksBetweenVnets",
+      "namespace": "Microsoft.Network",
+      "reason": "NotRegisteredInTarget"
+    },
+    {
+      "key": "locationCapability",
+      "namespace": "Microsoft.DBforPostgreSQL",
+      "reason": "NotFoundInTarget"
+    }
   ]
 }
 
 ```
 
-The modification is always additive, if target subscription already has an RP registered / more than required quota, it
-won't be turned off / reduced.
+The modification is always additive, if target subscription already has an RP / feature registered, it won't be turned
+off.
 
 The plan file can be modified manually if necessary.
 

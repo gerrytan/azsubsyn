@@ -9,16 +9,10 @@ import (
 	"github.com/gerrytan/azdiffit/internal/config"
 	"github.com/gerrytan/azdiffit/internal/credential"
 	"github.com/gerrytan/azdiffit/internal/pointer"
-	"github.com/gerrytan/azdiffit/internal/rp"
 )
 
-func planRPRegistrations() (rpRegs []RpRegistration, err error) {
+func planRPRegistrations(srcConfig *config.Config, targetConfig *config.Config) (rpRegs []RpRegistration, err error) {
 	ctx := context.Background()
-
-	srcConfig, targetConfig, err := config.BuildConfigs()
-	if err != nil {
-		return nil, fmt.Errorf("failed to build configurations: %w", err)
-	}
 
 	fmt.Println("🔍 Fetching resource providers from source subscription...")
 	sourceRPs, err := getResourceProviders(ctx, srcConfig)
@@ -32,22 +26,22 @@ func planRPRegistrations() (rpRegs []RpRegistration, err error) {
 		return nil, fmt.Errorf("failed to get resource providers from target subscription: %w", err)
 	}
 
-	targetRPsByNamespace := make(map[string]*rp.ResourceProvider)
+	targetRPsByNamespace := make(map[string]*armresources.Provider)
 	for _, rp := range targetRPs {
-		targetRPsByNamespace[rp.Namespace] = rp
+		targetRPsByNamespace[pointer.From(rp.Namespace)] = rp
 	}
 
 	for _, srcRp := range sourceRPs {
-		if strings.EqualFold(srcRp.RegistrationState, "Registered") {
-			targetRp, exists := targetRPsByNamespace[srcRp.Namespace]
+		if strings.EqualFold(pointer.From(srcRp.RegistrationState), "Registered") {
+			targetRp, exists := targetRPsByNamespace[pointer.From(srcRp.Namespace)]
 			if !exists {
 				rpRegs = append(rpRegs, RpRegistration{
-					Namespace: srcRp.Namespace,
+					Namespace: pointer.From(srcRp.Namespace),
 					Reason:    "NotFoundInTarget",
 				})
-			} else if !strings.EqualFold(targetRp.RegistrationState, "Registered") {
+			} else if !strings.EqualFold(pointer.From(targetRp.RegistrationState), "Registered") {
 				rpRegs = append(rpRegs, RpRegistration{
-					Namespace: targetRp.Namespace,
+					Namespace: pointer.From(targetRp.Namespace),
 					Reason:    "NotRegisteredInTarget",
 				})
 			}
@@ -57,7 +51,7 @@ func planRPRegistrations() (rpRegs []RpRegistration, err error) {
 	return
 }
 
-func getResourceProviders(ctx context.Context, config *config.Config) (rps []*rp.ResourceProvider, err error) {
+func getResourceProviders(ctx context.Context, config *config.Config) (rps []*armresources.Provider, err error) {
 	cred, err := credential.BuildCredential(config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create credential: %w", err)
@@ -79,12 +73,7 @@ func getResourceProviders(ctx context.Context, config *config.Config) (rps []*rp
 		}
 
 		for _, provider := range page.Value {
-			rps = append(rps, &rp.ResourceProvider{
-				Id:                 pointer.From(provider.ID),
-				Namespace:          pointer.From(provider.Namespace),
-				RegistrationState:  pointer.From(provider.RegistrationState),
-				RegistrationPolicy: pointer.From(provider.RegistrationPolicy),
-			})
+			rps = append(rps, provider)
 		}
 	}
 

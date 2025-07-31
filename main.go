@@ -43,17 +43,18 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Println("azdiffit - A CLI tool to setup a target Azure subscription based on a source subscription")
+	fmt.Println("azdiffit - A CLI tool to ensure target Azure subscription has all RPs (resource providers) and ")
+	fmt.Println("           preview features registered compared to source (which can be on a different tenant).")
 	fmt.Println()
 	fmt.Println("USAGE:")
 	fmt.Println("  azdiffit <command>")
 	fmt.Println()
 	fmt.Println("COMMANDS:")
 	fmt.Println("  credcheck    Check credentials and connectivity to both source and target subscriptions")
+	fmt.Println("  plan         Scan unregistered RPs and preview feature in the target subscription and save the plan to a file")
+	fmt.Println("  apply        Apply the plan file to the target subscription")
 	fmt.Println("  help         Show this help message")
 	fmt.Println()
 	fmt.Println("DESCRIPTION:")
-	fmt.Println("  azdiffit helps setup a target Azure subscription based on a source subscription.")
-	fmt.Println("  It ensures the target subscription has all Resource Providers registered,")
-	fmt.Println("  preview features registered, and enough quotas.")
+	fmt.Println("  See https://github.com/gerrytan/azdiffit for credential setup and usage example.")
 }
