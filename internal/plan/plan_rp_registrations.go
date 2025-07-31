@@ -32,14 +32,16 @@ func planRPRegistrations(srcConfig *config.Config, targetConfig *config.Config) 
 	}
 
 	for _, srcRp := range sourceRPs {
-		if strings.EqualFold(pointer.From(srcRp.RegistrationState), "Registered") {
+		srcRegState := pointer.From(srcRp.RegistrationState)
+		if strings.EqualFold(srcRegState, "Pending") || strings.EqualFold(srcRegState, "Registered") {
 			targetRp, exists := targetRPsByNamespace[pointer.From(srcRp.Namespace)]
 			if !exists {
 				rpRegs = append(rpRegs, RpRegistration{
 					Namespace: pointer.From(srcRp.Namespace),
 					Reason:    "NotFoundInTarget",
 				})
-			} else if !strings.EqualFold(pointer.From(targetRp.RegistrationState), "Registered") {
+			} else if !strings.EqualFold(pointer.From(targetRp.RegistrationState), "Pending") &&
+				!strings.EqualFold(pointer.From(targetRp.RegistrationState), "Registered") {
 				rpRegs = append(rpRegs, RpRegistration{
 					Namespace: pointer.From(targetRp.Namespace),
 					Reason:    "NotRegisteredInTarget",
