@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       azsubsyn_version:
-        description: 'Version of azsubsyn to build'
+        description: 'Version of azsubsyn to build (without v prefix)'
         required: true
         type: string
       go_version:
@@ -159,7 +159,7 @@ jobs:
     - name: Generate release tag
       id: tag
       run: |
-        TAG="${{ inputs.azsubsyn_version }}"
+        TAG="release-v${{ inputs.azsubsyn_version }}"
         echo "tag=$TAG" >> $GITHUB_OUTPUT
         echo "Generated tag: $TAG"
 
@@ -169,7 +169,7 @@ jobs:
         tag_name: ${{ steps.tag.outputs.tag }}
         name: Release ${{ steps.tag.outputs.tag }}
         body: |
-          Automated release of azsubsyn ${{ inputs.azsubsyn_version }} built for multiple platforms.
+          Automated release of azsubsyn v${{ inputs.azsubsyn_version }} built for multiple platforms.
 
           **Platforms included:**
           - Linux (amd64, arm64, arm-v7)
