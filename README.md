@@ -3,6 +3,8 @@
 A CLI tool to ensure a target Azure subscription has all RPs (resource providers) and preview features registered
 compared to source (which can be on a different tenant).
 
+Useful when setting up a new tenant / subscription based on an existing one.
+
 ## Prerequisites and installation
 
 You need to have [go](https://go.dev/doc/install) and [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed.
