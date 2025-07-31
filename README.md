@@ -5,11 +5,11 @@ compared to source (which can be on a different tenant).
 
 Useful when setting up a new tenant / subscription based on an existing one.
 
-## Prerequisites and installation
+## Installation and update
 
-You need to have [go](https://go.dev/doc/install) and [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed.
+Download the latest binary for your platform from the [releases](https://github.com/gerrytan/azsubsyn/releases) section, and extract it into `/usr/local/bin` or other places registered in your `PATH` variable.
 
-Install via go toolchain: `go install github.com/gerrytan/azsubsyn@latest`. The binary will be available in
+Alternatively install via go toolchain: `go install github.com/gerrytan/azsubsyn@latest`. The binary will be available in
 `$GOPATH/bin/azsubsyn`.
 
 ## Usage
@@ -17,7 +17,8 @@ Install via go toolchain: `go install github.com/gerrytan/azsubsyn@latest`. The 
 ### Credentials setup
 
 This tool uses a service principal with password based authentication. You need 'Owner' role in both source and target
-subscription to setup the principals.
+subscription to setup the principals. Also have [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
+installed for easy service principal setup.
 
 The following environment variables need to be set:
 
