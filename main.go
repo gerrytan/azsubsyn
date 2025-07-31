@@ -9,6 +9,11 @@ import (
 	"github.com/gerrytan/azsubsyn/internal/plan"
 )
 
+var Version = "dev-build"
+var GitCommitSHA = "unknown"
+var BuildNumber = "unknown"
+var BuildDate = "unknown"
+
 func main() {
 	if len(os.Args) < 2 {
 		printUsage()
@@ -33,6 +38,10 @@ func main() {
 			fmt.Printf("Error: %v\n", err)
 			os.Exit(1)
 		}
+	case "version", "-v", "--version":
+		fmt.Printf("version: %s\ngit commit SHA: %s\nbuild number: %s\nbuild date: %s\n",
+			Version, GitCommitSHA, BuildNumber, BuildDate)
+		os.Exit(0)
 	case "help", "-h", "--help":
 		printUsage()
 	default:

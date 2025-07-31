@@ -3,6 +3,10 @@ name: Build Multi-Platform
 on:
   workflow_dispatch:
     inputs:
+      azsubsyn_version:
+        description: 'Version of azsubsyn to build'
+        required: true
+        type: string
       go_version:
         description: 'Go version to use'
         required: false
@@ -26,50 +30,50 @@ jobs:
           - os: ubuntu-latest
             goos: linux
             goarch: amd64
-            artifact_name: azsubsyn-linux-amd64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-linux-amd64
           - os: ubuntu-latest
             goos: linux
             goarch: arm64
-            artifact_name: azsubsyn-linux-arm64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-linux-arm64
           - os: ubuntu-latest
             goos: linux
             goarch: arm
             goarm: 7
-            artifact_name: azsubsyn-linux-arm-v7
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-linux-arm-v7
           
           # Windows builds
           - os: windows-latest
             goos: windows
             goarch: amd64
-            artifact_name: azsubsyn-windows-amd64.exe
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-windows-amd64.exe
           - os: windows-latest
             goos: windows
             goarch: arm64
-            artifact_name: azsubsyn-windows-arm64.exe
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-windows-arm64.exe
           - os: windows-latest
             goos: windows
             goarch: 386
-            artifact_name: azsubsyn-windows-386.exe
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-windows-386.exe
           
           # macOS builds
           - os: macos-latest
             goos: darwin
             goarch: amd64
-            artifact_name: azsubsyn-darwin-amd64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-darwin-amd64
           - os: macos-latest
             goos: darwin
             goarch: arm64
-            artifact_name: azsubsyn-darwin-arm64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-darwin-arm64
           
           # FreeBSD builds
           - os: ubuntu-latest
             goos: freebsd
             goarch: amd64
-            artifact_name: azsubsyn-freebsd-amd64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-freebsd-amd64
           - os: ubuntu-latest
             goos: freebsd
             goarch: arm64
-            artifact_name: azsubsyn-freebsd-arm64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-freebsd-arm64
 
     steps:
     - name: Checkout code
@@ -107,13 +111,21 @@ jobs:
         GOARM: ${{ matrix.goarm }}
         CGO_ENABLED: 0
       run: |
-        go build -v -ldflags="-s -w" -o ${{ matrix.artifact_name }} .
+        BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        GIT_COMMIT=$(git rev-parse HEAD)
+        BUILD_NUMBER=${{ github.run_number }}
+        if [ "${{ matrix.goos }}" = "windows" ]; then
+          BINARY_NAME="azsubsyn.exe"
+        else
+          BINARY_NAME="azsubsyn"
+        fi
+        go build -v -ldflags="-s -w -X 'main.Version=${{ inputs.azsubsyn_version }}' -X 'main.GitCommitSHA=${GIT_COMMIT}' -X 'main.BuildNumber=${BUILD_NUMBER}' -X 'main.BuildDate=${BUILD_DATE}'" -o "$BINARY_NAME" .
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.artifact_name }}
-        path: ${{ matrix.artifact_name }}
+        path: ${{ matrix.goos == 'windows' && 'azsubsyn.exe' || 'azsubsyn' }}
         retention-days: 30
 
   create-release:
@@ -147,7 +159,7 @@ jobs:
     - name: Generate release tag
       id: tag
       run: |
-        TAG="v$(date +'%Y.%m.%d')-$(git rev-parse --short HEAD)"
+        TAG="${{ inputs.azsubsyn_version }}"
         echo "tag=$TAG" >> $GITHUB_OUTPUT
         echo "Generated tag: $TAG"
 
@@ -157,8 +169,8 @@ jobs:
         tag_name: ${{ steps.tag.outputs.tag }}
         name: Release ${{ steps.tag.outputs.tag }}
         body: |
-          Automated release of azsubsyn built for multiple platforms.
-          
+          Automated release of azsubsyn ${{ inputs.azsubsyn_version }} built for multiple platforms.
+
           **Platforms included:**
           - Linux (amd64, arm64, arm-v7)
           - Windows (amd64, arm64, 386)
