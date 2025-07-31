@@ -104,7 +104,8 @@ jobs:
       if: matrix.goos == runner.os || (matrix.goos == 'linux' && runner.os == 'Linux') || (matrix.goos == 'windows' && runner.os == 'Windows') || (matrix.goos == 'darwin' && runner.os == 'macOS')
       run: go test -v ./...
 
-    - name: Build binary
+    - name: Build binary (Non-Windows)
+      if: matrix.goos != 'windows'
       env:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
@@ -114,12 +115,21 @@ jobs:
         BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
         GIT_COMMIT=$(git rev-parse HEAD)
         BUILD_NUMBER=${{ github.run_number }}
-        if [ "${{ matrix.goos }}" = "windows" ]; then
-          BINARY_NAME="azsubsyn.exe"
-        else
-          BINARY_NAME="azsubsyn"
-        fi
-        go build -v -ldflags="-s -w -X 'main.Version=${{ inputs.azsubsyn_version }}' -X 'main.GitCommitSHA=${GIT_COMMIT}' -X 'main.BuildNumber=${BUILD_NUMBER}' -X 'main.BuildDate=${BUILD_DATE}'" -o "$BINARY_NAME" .
+        go build -v -ldflags="-s -w -X 'main.Version=${{ inputs.azsubsyn_version }}' -X 'main.GitCommitSHA=${GIT_COMMIT}' -X 'main.BuildNumber=${BUILD_NUMBER}' -X 'main.BuildDate=${BUILD_DATE}'" -o azsubsyn .
+
+    - name: Build binary (Windows)
+      if: matrix.goos == 'windows'
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+        GOARM: ${{ matrix.goarm }}
+        CGO_ENABLED: 0
+      run: |
+        $BUILD_DATE = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+        $GIT_COMMIT = git rev-parse HEAD
+        $BUILD_NUMBER = "${{ github.run_number }}"
+        go build -v -ldflags="-s -w -X 'main.Version=${{ inputs.azsubsyn_version }}' -X 'main.GitCommitSHA=$GIT_COMMIT' -X 'main.BuildNumber=$BUILD_NUMBER' -X 'main.BuildDate=$BUILD_DATE'" -o azsubsyn.exe .
+      shell: pwsh
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
