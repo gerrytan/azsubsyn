@@ -169,7 +169,6 @@ jobs:
     - name: Prepare release assets
       run: |
         mkdir -p release
-        find ./artifacts
         find ./artifacts -name "azsubsyn-*" -type f -exec cp {} release/ \;
         ls -la release/
 
@@ -183,10 +182,10 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ steps.tag.outputs.tag }}
-        name: Release ${{ steps.tag.outputs.tag }}
+        tag_name: v${{ inputs.azsubsyn_version }}
+        name: v${{ inputs.azsubsyn_version }}
         body: |
-          Automated release of azsubsyn v${{ inputs.azsubsyn_version }} built for multiple platforms.
+          Automated draft release of azsubsyn v${{ inputs.azsubsyn_version }} built for multiple platforms.
 
           **Platforms included:**
           - Linux (amd64, arm64, arm-v7)
@@ -198,7 +197,7 @@ jobs:
           **Commit:** ${{ github.sha }}
         files: |
           release/*
-        draft: false
+        draft: true
         prerelease: false
 
   summary:
