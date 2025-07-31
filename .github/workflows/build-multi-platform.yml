@@ -30,50 +30,50 @@ jobs:
           - os: ubuntu-latest
             goos: linux
             goarch: amd64
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-linux-amd64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-linux-amd64.tar.gz
           - os: ubuntu-latest
             goos: linux
             goarch: arm64
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-linux-arm64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-linux-arm64.tar.gz
           - os: ubuntu-latest
             goos: linux
             goarch: arm
             goarm: 7
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-linux-arm-v7
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-linux-arm-v7.tar.gz
           
           # Windows builds
           - os: windows-latest
             goos: windows
             goarch: amd64
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-windows-amd64.exe
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-windows-amd64.zip
           - os: windows-latest
             goos: windows
             goarch: arm64
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-windows-arm64.exe
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-windows-arm64.zip
           - os: windows-latest
             goos: windows
             goarch: 386
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-windows-386.exe
-          
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-windows-386.zip
+
           # macOS builds
           - os: macos-latest
             goos: darwin
             goarch: amd64
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-darwin-amd64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-darwin-amd64.tar.gz
           - os: macos-latest
             goos: darwin
             goarch: arm64
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-darwin-arm64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-darwin-arm64.tar.gz
           
           # FreeBSD builds
           - os: ubuntu-latest
             goos: freebsd
             goarch: amd64
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-freebsd-amd64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-freebsd-amd64.tar.gz
           - os: ubuntu-latest
             goos: freebsd
             goarch: arm64
-            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-freebsd-arm64
+            artifact_name: azsubsyn-${{ inputs.azsubsyn_version }}-freebsd-arm64.tar.gz
 
     steps:
     - name: Checkout code
@@ -117,6 +117,7 @@ jobs:
         BUILD_NUMBER=${{ github.run_number }}
         go build -v -ldflags="-s -w -X 'main.Version=${{ inputs.azsubsyn_version }}' -X 'main.GitCommitSHA=${GIT_COMMIT}' -X 'main.BuildNumber=${BUILD_NUMBER}' -X 'main.BuildDate=${BUILD_DATE}'" -o azsubsyn .
 
+
     - name: Build binary (Windows)
       if: matrix.goos == 'windows'
       env:
@@ -131,11 +132,22 @@ jobs:
         go build -v -ldflags="-s -w -X 'main.Version=${{ inputs.azsubsyn_version }}' -X 'main.GitCommitSHA=$GIT_COMMIT' -X 'main.BuildNumber=$BUILD_NUMBER' -X 'main.BuildDate=$BUILD_DATE'" -o azsubsyn.exe .
       shell: pwsh
 
+    - name: Create tarball (Non-Windows)
+      if: matrix.goos != 'windows'
+      run: |
+        tar -czf ${{ matrix.artifact_name }} azsubsyn
+
+    - name: Create zip archive (Windows)
+      if: matrix.goos == 'windows'
+      run: |
+        Compress-Archive -Path azsubsyn.exe -DestinationPath ${{ matrix.artifact_name }}
+      shell: pwsh
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.artifact_name }}
-        path: ${{ matrix.goos == 'windows' && 'azsubsyn.exe' || 'azsubsyn' }}
+        path: ${{ matrix.artifact_name }}
         retention-days: 30
 
   create-release:
@@ -157,14 +169,9 @@ jobs:
     - name: Prepare release assets
       run: |
         mkdir -p release
+        find ./artifacts
         find ./artifacts -name "azsubsyn-*" -type f -exec cp {} release/ \;
         ls -la release/
-
-    - name: Create checksums
-      run: |
-        cd release
-        sha256sum * > checksums.txt
-        cat checksums.txt
 
     - name: Generate release tag
       id: tag
