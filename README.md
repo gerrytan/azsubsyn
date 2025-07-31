@@ -12,6 +12,8 @@ Download the latest binary for your platform from the [releases](https://github.
 Alternatively install via go toolchain: `go install github.com/gerrytan/azsubsyn@latest`. The binary will be available in
 `$GOPATH/bin/azsubsyn`.
 
+Updating is as simple as replacing the old binary with a newer version.
+
 ## Usage
 
 ### Credentials setup
