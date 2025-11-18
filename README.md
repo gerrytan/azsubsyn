@@ -110,3 +110,12 @@ The plan file can be modified manually if necessary.
 ### Apply
 
 `azsubsyn apply azsubsyn-plan.jsonc` will execute the modification plan as per the supplied file.
+
+### What preview features and RP registrations are covered by this tool?
+
+This tool only covers features and RP registrations that are covered via these APIs:
+
+1. `/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Features/features` - [API doc](https://learn.microsoft.com/rest/api/resources/features?view=rest-resources-2021-07-01)
+2. `/subscriptions/00000000-0000-0000-0000-000000000000/providers` - [API doc](https://learn.microsoft.com/rest/api/resources/providers?view=rest-resources-2021-04-01)
+
+They are the same APIs used by `az feature` and `az provider` commands.
