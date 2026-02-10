@@ -10,7 +10,7 @@ Useful when setting up a new tenant / subscription based on an existing one.
 Download the latest binary for your platform from the [releases](https://github.com/gerrytan/azsubsyn/releases) section, and extract it into `/usr/local/bin` or other places registered in your `PATH` variable.
 
 Alternatively install via go toolchain: `go install github.com/gerrytan/azsubsyn@latest`. The binary will be available in
-`$GOPATH/bin/azsubsyn`.
+`$GOPATH/bin/azsubsyn`. You need to have the [latest stable version of go installed](https://go.dev/doc/install) if using this approach.
 
 Updating is as simple as replacing the old binary with a newer version.
 
